@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+                <div class="alert alert-light" role="alert" style="background-color: white;">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-2">
+                                {% if tweet.user.profile.profile_image %}
+                                <img src="{{tweet.user.profile.profile_image.url}}" alt="{{tweet.user.usename}}" style="width: 60px; height: 60px;" class="rounded-circle">
+                                {% else %}
+                                <img src="{% static 'images/default.jpeg' %}" alt="{{tweet.user.usename}}" style="width: 60px; height: 60px;" class="rounded-circle">
+                                {% endif %}
+                            </div>
+
+                            <div class="col-10">
+                                {{tweet.body}} <br>
+                                <small style="color: darkgray;">{{tweet.created|timesince}} ago by <a style="text-decoration: none;" href="{% url 'profile' tweet.user.id %}"><span style="color:rgb(72, 151, 216);">{{tweet.user}}</span></a></small>
+                                .  .  .  . {% if request.user in tweet.likes.all %} <a href="{% url 'tweet_like' tweet.id %}" style="text-decoration: none; color: red;"><img style="width: 20px;" src="{% static 'icons/liked.svg' %}" alt=""></a> {% else %} <a href="{% url 'tweet_like' tweet.id %}" style="text-decoration: none; color: blue; font-size: small;"><img style="width: 20px;" src="{% static 'icons/unliked.svg' %}" alt=""></a> {% endif %}
+                                - <small style="color: darkslategrey;">{% if tweet.number_of_likes > 1 %} {{tweet.number_of_likes}} likes {% else %} {{tweet.number_of_likes}} like {% endif %}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div> <br>
+        </div>
+        <div class="col-4"> <br><br><br>
+          
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

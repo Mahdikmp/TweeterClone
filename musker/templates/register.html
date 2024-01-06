@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Register</h1> <br>
+
+{% if request.user.is_authenticated %}
+<h4 style="color: cornflowerblue;">You are already registered my friend!</h4>
+{% else %}
+
+<form action="" method="post" style="width: 65%;">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button class="btn btn-outline-primary btn-sm" type="submit">Register</button>
+</form>
+
+<br>
+
+<h5> Already have an account? <a href="{% url 'login' %}" style="text-decoration: none;">Login</a></h5>
+<br><br>
+{% endif %}
+
+
+{% endblock content %}

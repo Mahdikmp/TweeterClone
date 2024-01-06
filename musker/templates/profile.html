@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% if profile %}
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <h1>{{profile.user.username}}'s Profile</h1> <br>
+            {% if tweets %}
+                {% for tweet in tweets %}
+                <div class="alert alert-light" role="alert" style="background-color: white;">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-2">
+                                {% if profile.profile_image %}
+                                <img src="{{profile.profile_image.url}}" alt="{{profile.user.username}}" style="width: 60px; height: 60px;" class="rounded-circle">
+                                {% else %}
+                                <img src="{% static 'images/default.jpeg' %}" alt="{{profile.user.username}}" style="width: 60px; height: 60px;" class="rounded-circle">
+                                {% endif %}
+                            </div>
+                            <div class="col-10">
+                                {{tweet.body}} <br>
+                                <small style="color: darkgrey;">{{tweet.created|timesince}} ago
+                                    .  .  .  . {% if request.user in tweet.likes.all %} <a href="{% url 'tweet_like' tweet.id %}" style="text-decoration: none; color: red;"><img style="width: 20px;" src="{% static 'icons/liked.svg' %}" alt=""></a> {% else %} <a href="{% url 'tweet_like' tweet.id %}" style="text-decoration: none; color: blue; font-size: small;"><img style="width: 20px;" src="{% static 'icons/unliked.svg' %}" alt=""></a> {% endif %}
+                                    - <small style="color: darkslategrey;">{% if tweet.number_of_likes > 1 %} {{tweet.number_of_likes}} likes {% else %} {{tweet.number_of_likes}} like {% endif %}</small>
+                                </small> 
+                            </div>
+                        </div>
+                    </div>
+                
+                  </div> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-4"> <br> <br> <br>
+                {% if profile.profile_image %}
+                <img src="{{profile.profile_image.url}}" alt="" class="rounded-circle"> <br> <br>
+                {% endif %}
+                <div class="card border-info mb-3" style="max-width: 15rem;">
+                    <div class="card-header"><strong> {{profile.follows.count}} Followings</strong></div>
+                        <div class="card-body">
+                            {% for following in profile.follows.all %}
+                            <a href="{% url 'profile' following.user.id %}" style="text-decoration: none;">{{following.user.username}}</a> <br>
+                            {% endfor %}
+                        </div>
+                </div>
+
+                <div class="card border-warning mb-3" style="max-width: 15rem;">
+                    <div class="card-header"><strong> {{profile.followed_by.count}} Followers</strong></div>
+                    <div class="card-body">
+                        {% for follower in profile.followed_by.all %}
+                        <a href="{% url 'profile' follower.user.id %}" style="text-decoration: none;">{{follower.user.username}}</a> <br>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {% if profile in user.profile.follows.all %}
+                    <button type="submit" name="follow" value="unfollow" class="btn btn-outline-danger btn-sm">Unflollow</button>
+                    {% else %}
+                    <button type="submit" name="follow" value="follow" class="btn btn-outline-primary btn-sm">Follow</button>
+                    {% endif %}
+                </form> <br>
+                {% if profile.user == request.user %}
+                <a href="{% url 'user_update'%}"><button class="btn btn-outline-info btn-sm">Edit Profile</button></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+ <br> <br>
+{% endif %}
+
+
+
+
+{% endblock content %}
